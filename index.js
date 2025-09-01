@@ -37,22 +37,36 @@ client.on("guildMemberAdd", (member) => {
   }
 });
 
-client.on("messageCreate", (message) => {
-  if (!message.content.startsWith(config.prefix) || message.author.bot) return;
+client.on("messageCreate", async (message) => {
+  if (message.author.bot) return;
+
+  // --- NOVA FUNÇÃO: Resposta ao @Bot help ---
+  const isMentioned = message.mentions.has(client.user);
+  if (isMentioned && message.content.toLowerCase().includes("help")) {
+    const helpCommand = client.commands.get("help");
+    if (helpCommand) {
+      await helpCommand.execute(message, [], client);
+    }
+    return; // evita rodar a parte de prefixo
+  }
+  // -----------------------------------------
+
+  // Comando com prefixo
+  if (!message.content.startsWith(config.prefix)) return;
 
   const args = message.content.slice(config.prefix.length).trim().split(/ +/);
   const commandName = args.shift().toLowerCase();
 
   const command = client.commands.get(commandName);
-  if (!command) return;  // ✅ Corrigido
+  if (!command) return;
 
-  // index.js (parte do comando)
-try {
-  command.execute(message, args, client); // 👈 passa o client
-} catch (error) {
-  console.error(error);
-  message.reply("⚠️ Ocorreu um erro ao executar o comando!");
-}
+  try {
+    command.execute(message, args, client);
+  } catch (error) {
+    console.error(error);
+    message.reply("⚠️ Ocorreu um erro ao executar o comando!");
+  }
 });
+
 require("dotenv").config();
 client.login(process.env.DISCORD_TOKEN);
