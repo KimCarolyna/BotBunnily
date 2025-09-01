@@ -46,12 +46,13 @@ client.on("messageCreate", (message) => {
   const command = client.commands.get(commandName);
   if (!command) return;  // ✅ Corrigido
 
-  try {
-    command.execute(message, args);
-  } catch (error) {
-    console.error(error);
-    message.reply("⚠️ Ocorreu um erro ao executar o comando!");
-  }
+  // index.js (parte do comando)
+try {
+  command.execute(message, args, client); // 👈 passa o client
+} catch (error) {
+  console.error(error);
+  message.reply("⚠️ Ocorreu um erro ao executar o comando!");
+}
 });
 require("dotenv").config();
 client.login(process.env.DISCORD_TOKEN);
