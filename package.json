@@ -1,7 +1,7 @@
 {
   "name": "botbunnily",
   "version": "1.0.0",
-  "main": "play/index.js",
+  "main": "index.js",
   "scripts": {
     "start": "node index.js"
   },
