@@ -1,32 +1,35 @@
-🤖 Bunnily Bot
+🐇 Bunnily Bot
 
-Um bot de estudo para Discord feito com Node.js e Discord.js.
-Ele ajuda nos estudos com funcionalidades de dicionário, flashcards, resumos, questões, motivação e até diversão com comandos extras.
+Um bot de estudos para Discord, feito com Node.js e Discord.js.
+Ele ajuda nos estudos com dicionário, flashcards, resumos, questões, frases motivacionais e também conta com comandos divertidos.
 
-🚀 Funcionalidades
+---
+
+## 🚀 Funcionalidades
 📚 Estudo
 
-Dicionário → adiciona e consulta palavras com seus significados.
+-📖 Dicionário → adiciona e consulta palavras.
 
-Flashcards → cria e revisa cartões de estudo.
+-🎯 Flashcards → cria e revisa cartões de estudo.
 
-Resumos → armazena resumos de conteúdo.
+-📝 Resumos → salva resumos de conteúdos.
 
-Questões → adiciona perguntas e respostas para treinar.
+-❓ Questões → adiciona perguntas e respostas para praticar.
 
-Motivação → frases motivacionais para dar aquele gás.
+-💡 Motivação → envia frases motivacionais.
 
-Pomodoro → técnica de estudo com pausas programadas.
+-⏱ Pomodoro → técnica de estudo com pausas.
 
 🎉 Diversão
 
-Ping → teste de latência do bot.
+-🏓 Ping → teste de latência do bot.
 
-Coinflip → cara ou coroa.
+-🪙 Coinflip → cara ou coroa.
 
-Avatar → mostra o avatar de um usuário.
+-🖼 Avatar → mostra o avatar de um usuário.
 
-📖 Exemplos de Comandos
+## 📖 Exemplos de Comandos
+```bash
 Categoria	Comando	Descrição
 📚 Dicionário	`#dict add casa	lugar para morar`
 📚 Dicionário	#dict get casa	Consulta palavra
@@ -38,13 +41,14 @@ Categoria	Comando	Descrição
 🎯 Flashcards	#flash play	Revê flashcards
 🎉 Coinflip	#coinflip	Cara ou coroa
 🎉 Ping	#ping	Teste de latência
-🛠️ Tecnologias
+```
+## 🛠️ Tecnologias
 
 Node.js
 
 Discord.js v14
 
-📌 To-Do Futuro
+## 📌 To-Do Futuro
 
  Sistema de níveis de estudo
 
@@ -52,6 +56,6 @@ Discord.js v14
 
  Painel web para gerenciar dados
 
-👨‍💻 Autor
+## 👨‍💻 Autor
 
 Feito por mim :>✨
