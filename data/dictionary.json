@@ -1,37 +1,111 @@
 [
   {
-    "palavra": "Idol",
-    "definicao": "Artista do K-pop, seja solista ou integrante de grupo.",
+    "palavra": "let",
+    "definicao": "Declara uma variável que pode mudar.",
     "sinonimos": [
-      "Celebridade",
-      "performer",
-      "estrela."
-    ]
+      "variável",
+      "mutável",
+      "valor dinâmico."
+    ],
+    "exemplo": "let nome = \"Carolyna\";"
   },
   {
-    "palavra": "Debut",
-    "definicao": "Estreia oficial de um grupo ou artista no mercado musical.",
+    "palavra": "const",
+    "definicao": "Declara uma constante, ou seja, um valor que não muda.",
     "sinonimos": [
-      "sinônimo: Lançamento",
-      "estreia",
-      "início de carreira."
-    ]
+      "constante",
+      "fixo",
+      "imutável."
+    ],
+    "exemplo": "const PI = 3.14;"
   },
   {
-    "palavra": "Comeback",
-    "definicao": "Retorno de um artista com novo álbum, single ou clipe.",
+    "palavra": "function",
+    "definicao": "Bloco de código reutilizável que executa uma tarefa.",
     "sinonimos": [
-      "sinônimo: Retorno",
-      "nova era",
-      "relançamento."
-    ]
+      "método",
+      "rotina",
+      "procedimento."
+    ],
+    "exemplo": "function saudacao() {\n console.log(\"Olá!\");\n}"
   },
   {
-    "palavra": "BTS",
-    "definicao": "Grupo de k-pop sul-coreano.",
+    "palavra": "=> (Arrow Function)",
+    "definicao": "Forma moderna e concisa de escrever funções.",
     "sinonimos": [
-      "Sinônimos: bangtan",
-      "bangtan boys"
-    ]
+      "função seta",
+      "lambda",
+      "função curta."
+    ],
+    "exemplo": "const soma = (a, b) => a + b;"
+  },
+  {
+    "palavra": "if / else",
+    "definicao": "Estrutura condicional que executa blocos diferentes conforme a situação.",
+    "sinonimos": [
+      "condição",
+      "verificação",
+      "decisão."
+    ],
+    "exemplo": "if (idade >= 18) {\n console.log(\"Maior de idade\");\n} else {\n console.log(\"Menor de idade\");\n}"
+  },
+  {
+    "palavra": "===",
+    "definicao": "Comparação estrita (valor e tipo).",
+    "sinonimos": [
+      "igualdade exata",
+      "comparação precisa."
+    ],
+    "exemplo": "if (a === b) { ... }"
+  },
+  {
+    "palavra": "[] (Array)",
+    "definicao": "Lista de valores em uma única variável.",
+    "sinonimos": [
+      "vetor",
+      "coleção",
+      "lista."
+    ],
+    "exemplo": "const grupos = [\"NewJeans\", \"TXT\", \"IVE\"];"
+  },
+  {
+    "palavra": "{} (Objeto)",
+    "definicao": "Estrutura que guarda pares de chave e valor.",
+    "sinonimos": [
+      "dicionário",
+      "estrutura",
+      "entidade."
+    ],
+    "exemplo": "const idol = { nome: \"Lisa\", grupo: \"BLACKPINK\" };"
+  },
+  {
+    "palavra": "for",
+    "definicao": "Laço de repetição que percorre elementos.",
+    "sinonimos": [
+      "loop",
+      "ciclo",
+      "repetição."
+    ],
+    "exemplo": "for (let i = 0; i < 5; i++) { ... }"
+  },
+  {
+    "palavra": "try / catch",
+    "definicao": "Bloco que trata erros de forma segura.",
+    "sinonimos": [
+      "tratamento de erro",
+      "exceção",
+      "proteção."
+    ],
+    "exemplo": "try {\n // código\n} catch (erro) {\n console.error(erro);\n}"
+  },
+  {
+    "palavra": "return",
+    "definicao": "Encerra uma função e devolve um valor.",
+    "sinonimos": [
+      "devolver",
+      "resposta",
+      "saída."
+    ],
+    "exemplo": "return \"Tudo certo!\";"
   }
 ]

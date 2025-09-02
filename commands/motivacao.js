@@ -1,6 +1,6 @@
 const fs = require("fs");
 const path = require("path");
-const { EmbedBuilder } = require("discord.js");
+const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
 
 const dirPath = path.join(__dirname, "../data");
 const filePath = path.join(dirPath, "motivacao.json");
@@ -35,28 +35,38 @@ module.exports = {
   name: "motivacao",
   description: "Frases motivacionais para animar seu dia!",
 
-  async execute(message, args) {
+  async execute(message, args, client) {
     try {
       const frases = carregarFrases();
 
-      // Ajuda
-      if (args[0] === "help") {
-        const embed = new EmbedBuilder()
-          .setColor("Orange")
-          .setTitle("🌟 Ajuda - Motivação")
-          .setDescription("Veja abaixo os comandos disponíveis:")
-          .addFields(
-            { name: "✨ Frase motivacional", value: "`#motivacao`", inline: false },
-            { name: "📋 Listar frases", value: "`#motivacao list`", inline: false },
-            { name: "➕ Adicionar", value: "`#motivacao add <frase>`", inline: false },
-            { name: "🗑️ Remover", value: "`#motivacao remove <id>`", inline: false }
-          )
-          .setFooter({ text: "Use as frases para se inspirar todo dia ✨" });
+      // ----------------- BOTÕES -----------------
+      if (args[0] === "buttons") {
+        const row = new ActionRowBuilder().addComponents(
+          new ButtonBuilder()
+            .setCustomId("motivacao_random")
+            .setLabel("✨ Frase Aleatória")
+            .setStyle(ButtonStyle.Success),
+          new ButtonBuilder()
+            .setCustomId("motivacao_list")
+            .setLabel("📋 Listar")
+            .setStyle(ButtonStyle.Primary),
+          new ButtonBuilder()
+            .setCustomId("motivacao_add")
+            .setLabel("➕ Adicionar")
+            .setStyle(ButtonStyle.Secondary),
+          new ButtonBuilder()
+            .setCustomId("motivacao_remove")
+            .setLabel("🗑️ Remover")
+            .setStyle(ButtonStyle.Danger)
+        );
 
-        return message.channel.send({ embeds: [embed] });
+        return message.channel.send({
+          content: "🌟 **Menu Motivacional** 🌟\nEscolha uma opção:",
+          components: [row],
+        });
       }
 
-      // Listar frases
+      // ----------------- LISTAR -----------------
       if (args[0] === "list") {
         if (frases.length === 0) {
           return message.reply("⚠️ Nenhuma frase cadastrada ainda! Adicione com `#motivacao add <frase>`.");
@@ -65,7 +75,7 @@ module.exports = {
         return message.channel.send("📋 **Frases disponíveis:**\n" + lista);
       }
 
-      // Adicionar frase
+      // ----------------- ADD -----------------
       if (args[0] === "add") {
         const novaFrase = args.slice(1).join(" ").trim();
         if (!novaFrase) return message.reply("⚠️ Escreva a frase que deseja adicionar!");
@@ -74,7 +84,7 @@ module.exports = {
         return message.channel.send("✅ Nova frase motivacional adicionada!");
       }
 
-      // Remover frase
+      // ----------------- REMOVE -----------------
       if (args[0] === "remove") {
         const index = parseInt(args[1], 10) - 1;
         if (isNaN(index) || index < 0 || index >= frases.length) {
@@ -85,7 +95,7 @@ module.exports = {
         return message.channel.send(`🗑️ Frase removida: ${removida}`);
       }
 
-      // Frase aleatória
+      // ----------------- RANDOM -----------------
       if (args.length === 0) {
         if (frases.length === 0) {
           return message.reply("⚠️ Não há frases ainda. Adicione com `#motivacao add <frase>`.");
@@ -99,10 +109,9 @@ module.exports = {
 
         return message.channel.send({ embeds: [embed] });
       }
-
     } catch (err) {
       console.error("[motivacao] Erro ao executar:", err);
       return message.reply("❌ Não consegui processar o comando. Veja o console para detalhes.");
     }
-  }
+  },
 };
