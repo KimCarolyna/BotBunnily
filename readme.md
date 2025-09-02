@@ -30,7 +30,8 @@ Ele ajuda nos estudos com dicionário, flashcards, resumos, questões, frases mo
 
 ## 📖 Exemplos de Comandos
 ```bash
-Categoria	Comando	Descrição
+Categoria	        Comando	Descrição
+---
 📚 Dicionário	#dic add casa	lugar para morar
 
 📚 Dicionário	#dic get casa	Consulta palavra
