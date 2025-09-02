@@ -20,12 +20,29 @@ module.exports = {
     const subcommand = args.shift();
 
     // ================================
+    // AJUDA / EXEMPLOS
+    // ================================
+    if (!subcommand || subcommand === "help") {
+      const embed = new EmbedBuilder()
+        .setTitle("📘 Comandos de Resumos")
+        .setColor("Blue")
+        .setDescription("Veja abaixo como usar os comandos do resumo:")
+        .addFields(
+          { name: "➕ Adicionar", value: "`#resumo add <Título> | <Conteúdo>`\nExemplo: `#resumo add Matemática | Equações de 2º grau`" },
+          { name: "📂 Listar", value: "`#resumo list`\nExemplo: `#resumo list`" },
+          { name: "🗑️ Remover", value: "`#resumo remove <Título>`\nExemplo: `#resumo remove Matemática`" }
+        );
+
+      return message.reply({ embeds: [embed] });
+    }
+
+    // ================================
     // ADICIONAR RESUMO
     // ================================
     if (subcommand === "add") {
       const [titulo, ...conteudoArr] = args.join(" ").split("|");
       if (!titulo || conteudoArr.length === 0) {
-        return message.reply("⚠️ Use: `#resumo add <Título> | <Conteúdo>`");
+        return message.reply("⚠️ Use: `#resumo add <Título> | <Conteúdo>`\nExemplo: `#resumo add História | Revolução Francesa`");
       }
 
       const conteudo = conteudoArr.join("|").trim();
@@ -82,7 +99,9 @@ module.exports = {
     // ================================
     if (subcommand === "remove") {
       const titulo = args.join(" ").trim();
-      if (!titulo) return message.reply("⚠️ Use: `#resumo remove <Título>`");
+      if (!titulo) {
+        return message.reply("⚠️ Use: `#resumo remove <Título>`\nExemplo: `#resumo remove Matemática`");
+      }
 
       const index = data.resumos.findIndex(r => r.titulo.toLowerCase() === titulo.toLowerCase());
       if (index === -1) return message.reply(`❌ Nenhum resumo encontrado com o título **${titulo}**.`);
