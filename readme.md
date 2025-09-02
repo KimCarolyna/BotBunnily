@@ -31,15 +31,24 @@ Ele ajuda nos estudos com dicionário, flashcards, resumos, questões, frases mo
 ## 📖 Exemplos de Comandos
 ```bash
 Categoria	Comando	Descrição
-📚 Dicionário	`#dict add casa	lugar para morar`
-📚 Dicionário	#dict get casa	Consulta palavra
-📝 Questões	`#questao add Quem descobriu o Brasil?	Pedro Álvares Cabral`
+📚 Dicionário	#dic add casa	lugar para morar
+
+📚 Dicionário	#dic get casa	Consulta palavra
+
+📝 Questões	#questao add Quem descobriu o Brasil?	Pedro Álvares Cabral
+
 📝 Questões	#questao play	Sorteia uma questão
-📘 Resumos	`#resumo add Frações	resumo sobre matemática`
+
+📘 Resumos	#resumo add Frações	resumo sobre matemática
+
 📘 Resumos	#resumo list	Lista resumos
-🎯 Flashcards	`#flash add HTML	linguagem de marcação`
-🎯 Flashcards	#flash play	Revê flashcards
+
+🎯 Flashcards	#flash add HTML	linguagem de marcação
+
+🎯 Flashcards	#flash play	vê flashcards
+
 🎉 Coinflip	#coinflip	Cara ou coroa
+
 🎉 Ping	#ping	Teste de latência
 ```
 ## 🛠️ Tecnologias
