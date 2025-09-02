@@ -8,25 +8,25 @@ Ele ajuda nos estudos com dicionário, flashcards, resumos, questões, frases mo
 ## 🚀 Funcionalidades
 📚 Estudo
 
--📖 Dicionário → adiciona e consulta palavras.
+- 📖 Dicionário → adiciona e consulta palavras.
 
--🎯 Flashcards → cria e revisa cartões de estudo.
+- 🎯 Flashcards → cria e revisa cartões de estudo.
 
--📝 Resumos → salva resumos de conteúdos.
+- 📝 Resumos → salva resumos de conteúdos.
 
--❓ Questões → adiciona perguntas e respostas para praticar.
+- ❓ Questões → adiciona perguntas e respostas para praticar.
 
--💡 Motivação → envia frases motivacionais.
+- 💡 Motivação → envia frases motivacionais.
 
--⏱ Pomodoro → técnica de estudo com pausas.
+- ⏱ Pomodoro → técnica de estudo com pausas.
 
 🎉 Diversão
 
--🏓 Ping → teste de latência do bot.
+- 🏓 Ping → teste de latência do bot.
 
--🪙 Coinflip → cara ou coroa.
+- 🪙 Coinflip → cara ou coroa.
 
--🖼 Avatar → mostra o avatar de um usuário.
+- 🖼 Avatar → mostra o avatar de um usuário.
 
 ## 📖 Exemplos de Comandos
 ```bash
@@ -44,13 +44,13 @@ Categoria	        Comando	Descrição
 
 📘 Resumos	        #resumo list	Lista resumos
 
-🎯 Flashcards	   #flash add HTML	linguagem de marcação
+🎯 Flashcards	    #flash add HTML	linguagem de marcação
 
-🎯 Flashcards	   #flash play	vê flashcards
+🎯 Flashcards	    #flash play	vê flashcards
 
-🎉 Coinflip	       #coinflip	Cara ou coroa
+🎉 Coinflip	        #coinflip	Cara ou coroa
 
-🎉 Ping	           #ping	Teste de latência
+🎉 Ping	            #ping	Teste de latência
 ```
 ## 🛠️ Tecnologias
 
