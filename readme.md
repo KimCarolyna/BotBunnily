@@ -34,7 +34,7 @@ Categoria	        Comando	Descrição
 ----------------------------------------
 📚 Dicionário	    #dic add casa	lugar para morar
 
-📚 Dicionário	    #dic get casa	Consulta palavra
+📚 Dicionário	    #dic search casa	Consulta palavra
 
 📝 Questões	        #questao add Quem descobriu o Brasil?	Pedro Álvares Cabral
 
