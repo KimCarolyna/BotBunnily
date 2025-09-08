@@ -9,48 +9,58 @@ const {
 
 const dicPath = path.join(__dirname, "../data/dictionary.json");
 const historyPath = path.join(__dirname, "../data/history.json");
+const favPath = path.join(__dirname, "../data/favorites.json");
 
 // Garante que os arquivos existam
 if (!fs.existsSync(dicPath)) fs.writeFileSync(dicPath, "[]");
 if (!fs.existsSync(historyPath)) fs.writeFileSync(historyPath, "{}");
+if (!fs.existsSync(favPath)) fs.writeFileSync(favPath, "{}");
 
 module.exports = {
   name: "dic",
-  description: "Dicionário de palavras (add, list, search, remove, random, history)",
+  description:
+    "Dicionário de palavras (add, list, search, remove, random, history, fav, top, desafio)",
   category: "📖 Estudos",
 
   async execute(message, args) {
     let dic = JSON.parse(fs.readFileSync(dicPath, "utf8"));
     let history = JSON.parse(fs.readFileSync(historyPath, "utf8"));
+    let favs = JSON.parse(fs.readFileSync(favPath, "utf8"));
 
     const subcommand = args.shift();
 
     // ----------- ADD -----------
     if (subcommand === "add") {
-      const partes = args.join(" ").split("|").map(p => p.trim());
+      const partes = args.join(" ").split("|").map((p) => p.trim());
       const palavra = partes[0];
       const definicao = partes[1];
       const sinonimos = partes[2]
-        ? partes[2].replace(/sinônimos:/i, "").split(",").map(s => s.trim())
+        ? partes[2].replace(/sinônimos:/i, "").split(",").map((s) => s.trim())
         : [];
       const exemplo = partes[3]?.replace(/exemplo:/i, "").trim() || null;
+      const categoria = partes[4]?.replace(/categoria:/i, "").trim() || "geral";
 
       if (!palavra || !definicao) {
         return message.reply(
-          "⚠️ Use: `#dic add palavra | definição | sinônimos: opcional,opcional | exemplo: opcional`"
+          "⚠️ Use: `#dic add palavra | definição | sinônimos: opcional,opcional | exemplo: opcional | categoria: opcional`"
         );
       }
 
-      if (dic.find(item => item.palavra.toLowerCase() === palavra.toLowerCase())) {
-        return message.reply("⚠️ Essa palavra já existe no dicionário.");
+      if (dic.find((item) => item.palavra.toLowerCase() === palavra.toLowerCase())) {
+        const msg = await message.reply("❌ Essa palavra já existe no dicionário.");
+        msg.react("❌");
+        return;
       }
 
-      dic.push({ palavra, definicao, sinonimos, exemplo });
+      dic.push({ palavra, definicao, sinonimos, exemplo, categoria });
       fs.writeFileSync(dicPath, JSON.stringify(dic, null, 2));
-      return message.reply(`✅ Palavra adicionada: **${palavra}**`);
+
+      const msg = await message.reply(`✅ Palavra adicionada: **${palavra}** (categoria: ${categoria})`);
+      msg.react("✅");
+      return;
     }
 
-    // ----------- LIST (com botões ⬅️➡️) -----------
+    // ----------- LIST -----------
     if (subcommand === "list") {
       if (dic.length === 0) return message.reply("⚠️ Nenhuma palavra cadastrada.");
 
@@ -61,7 +71,8 @@ module.exports = {
         const embed = new EmbedBuilder()
           .setTitle(`📖 ${data.palavra}`)
           .setDescription(data.definicao)
-          .setColor("Blue");
+          .setColor("Blue")
+          .setFooter({ text: `Categoria: ${data.categoria || "geral"}` });
 
         if (data.sinonimos?.length) {
           embed.addFields({ name: "🔗 Sinônimos", value: data.sinonimos.join(", ") });
@@ -79,24 +90,34 @@ module.exports = {
         new ButtonBuilder().setCustomId("next").setLabel("➡️").setStyle(ButtonStyle.Secondary)
       );
 
-      const msg = await message.reply({ embeds: [embed], components: [row] });
+      const quickRow = new ActionRowBuilder().addComponents(
+        new ButtonBuilder().setCustomId("known").setLabel("👍 Já conhecia").setStyle(ButtonStyle.Success),
+        new ButtonBuilder().setCustomId("unknown").setLabel("👎 Não conhecia").setStyle(ButtonStyle.Danger)
+      );
+
+      const msg = await message.reply({ embeds: [embed], components: [row, quickRow] });
 
       const collector = msg.createMessageComponentCollector({ time: 60000 });
 
       collector.on("collect", async (interaction) => {
         if (!interaction.isButton()) return;
         if (interaction.user.id !== message.author.id) {
-          return interaction.reply({ content: "⚠️ Só quem usou o comando pode navegar.", ephemeral: true });
+          return interaction.reply({ content: "⚠️ Só quem usou o comando pode interagir.", ephemeral: true });
         }
 
         if (interaction.customId === "prev") {
           index = (index - 1 + dic.length) % dic.length;
+          item = dic[index];
+          await interaction.update({ embeds: [buildEmbed(item)], components: [row, quickRow] });
         } else if (interaction.customId === "next") {
           index = (index + 1) % dic.length;
+          item = dic[index];
+          await interaction.update({ embeds: [buildEmbed(item)], components: [row, quickRow] });
+        } else if (interaction.customId === "known") {
+          await interaction.reply({ content: "✅ Legal! Você já conhecia essa palavra.", ephemeral: true });
+        } else if (interaction.customId === "unknown") {
+          await interaction.reply({ content: "📚 Bom saber! Agora você aprendeu algo novo.", ephemeral: true });
         }
-
-        item = dic[index];
-        await interaction.update({ embeds: [buildEmbed(item)], components: [row] });
       });
       return;
     }
@@ -106,52 +127,54 @@ module.exports = {
       const termo = args.join(" ").toLowerCase();
       if (!termo) return message.reply("⚠️ Use: `#dic search palavra`");
 
-      const encontrados = dic.filter(item =>
-        item.palavra.toLowerCase().includes(termo) ||
-        (item.sinonimos && item.sinonimos.some(s => s.toLowerCase().includes(termo)))
+      const encontrados = dic.filter(
+        (item) =>
+          item.palavra.toLowerCase().includes(termo) ||
+          (item.sinonimos && item.sinonimos.some((s) => s.toLowerCase().includes(termo)))
       );
 
       if (encontrados.length === 0) return message.reply("❌ Palavra não encontrada.");
 
       // Registrar histórico
-      encontrados.forEach(item => {
+      encontrados.forEach((item) => {
         if (!history[item.palavra]) history[item.palavra] = 0;
         history[item.palavra]++;
       });
       fs.writeFileSync(historyPath, JSON.stringify(history, null, 2));
 
       let resposta = "🔎 **Resultados encontrados:**\n";
-      encontrados.forEach(item => {
+      encontrados.forEach((item) => {
         resposta += `\n📖 **${item.palavra}** — ${item.definicao}`;
         if (item.sinonimos?.length) resposta += `\n   🔗 *Sinônimos:* ${item.sinonimos.join(", ")}`;
         if (item.exemplo) resposta += `\n   💡 *Exemplo:* ${item.exemplo}`;
+        resposta += `\n   📌 *Categoria:* ${item.categoria || "geral"}\n`;
       });
 
-      return message.channel.send(resposta);
-    }
+      const quickRow = new ActionRowBuilder().addComponents(
+        new ButtonBuilder().setCustomId("known").setLabel("👍 Já conhecia").setStyle(ButtonStyle.Success),
+        new ButtonBuilder().setCustomId("unknown").setLabel("👎 Não conhecia").setStyle(ButtonStyle.Danger)
+      );
 
-    // ----------- REMOVE -----------
-    if (subcommand === "remove") {
-      const termo = args.join(" ").toLowerCase();
-      if (!termo) return message.reply("⚠️ Use: `#dic remove palavra`");
-
-      const index = dic.findIndex(item => item.palavra.toLowerCase() === termo);
-      if (index === -1) return message.reply("❌ Palavra não encontrada no dicionário.");
-
-      const removido = dic.splice(index, 1);
-      fs.writeFileSync(dicPath, JSON.stringify(dic, null, 2));
-      return message.reply(`🗑️ Palavra removida: **${removido[0].palavra}**`);
+      await message.channel.send({ content: resposta, components: [quickRow] });
+      return;
     }
 
     // ----------- RANDOM -----------
     if (subcommand === "random") {
-      if (dic.length === 0) return message.reply("⚠️ Nenhuma palavra cadastrada.");
+      let categoria = args[0]?.toLowerCase();
+      let lista = dic;
 
-      const random = dic[Math.floor(Math.random() * dic.length)];
+      if (categoria) {
+        lista = dic.filter((item) => item.categoria?.toLowerCase() === categoria);
+        if (lista.length === 0) return message.reply(`⚠️ Nenhuma palavra na categoria **${categoria}**.`);
+      }
+
+      const random = lista[Math.floor(Math.random() * lista.length)];
       const embed = new EmbedBuilder()
-        .setTitle(`🎲 Palavra do dia: ${random.palavra}`)
+        .setTitle(`🎲 Palavra aleatória: ${random.palavra}`)
         .setDescription(random.definicao)
-        .setColor("Green");
+        .setColor("Green")
+        .setFooter({ text: `Categoria: ${random.categoria || "geral"}` });
 
       if (random.sinonimos?.length) {
         embed.addFields({ name: "🔗 Sinônimos", value: random.sinonimos.join(", ") });
@@ -160,32 +183,89 @@ module.exports = {
         embed.addFields({ name: "💡 Exemplo", value: `\`\`\`${random.exemplo}\`\`\`` });
       }
 
-      return message.channel.send({ embeds: [embed] });
+      const quickRow = new ActionRowBuilder().addComponents(
+        new ButtonBuilder().setCustomId("known").setLabel("👍 Já conhecia").setStyle(ButtonStyle.Success),
+        new ButtonBuilder().setCustomId("unknown").setLabel("👎 Não conhecia").setStyle(ButtonStyle.Danger)
+      );
+
+      return message.channel.send({ embeds: [embed], components: [quickRow] });
     }
 
-    // ----------- HISTORY -----------
-    if (subcommand === "history") {
-      if (Object.keys(history).length === 0) return message.reply("⚠️ Nenhuma busca registrada ainda.");
+    // ----------- FAVORITOS -----------
+    if (subcommand === "fav") {
+      const action = args.shift();
+      const userId = message.author.id;
 
-      let texto = "📊 **Histórico de buscas:**\n\n";
-      const sorted = Object.entries(history).sort((a, b) => b[1] - a[1]);
+      if (!favs[userId]) favs[userId] = [];
 
-      sorted.forEach(([palavra, count], i) => {
-        texto += `${i + 1}. **${palavra}** — pesquisada **${count}x**\n`;
-      });
+      if (action === "add") {
+        const termo = args.join(" ").toLowerCase();
+        const item = dic.find((i) => i.palavra.toLowerCase() === termo);
+        if (!item) return message.reply("❌ Palavra não encontrada no dicionário.");
 
-      return message.channel.send(texto);
+        if (favs[userId].some((fav) => fav.palavra === item.palavra)) {
+          return message.reply("⚠️ Essa palavra já está nos seus favoritos.");
+        }
+
+        // Salva com data de inclusão
+        favs[userId].push({ palavra: item.palavra, data: Date.now() });
+        fs.writeFileSync(favPath, JSON.stringify(favs, null, 2));
+
+        return message.reply(`⭐ Palavra adicionada aos favoritos: **${item.palavra}**\n📅 Você receberá lembretes para revisar.`);
+      }
+
+      if (action === "list") {
+        if (favs[userId].length === 0) return message.reply("⚠️ Você ainda não tem favoritos.");
+
+        let texto = "⭐ **Seus favoritos:**\n";
+        favs[userId].forEach((p) => {
+          texto += `- ${p.palavra} (adicionado em ${new Date(p.data).toLocaleDateString("pt-BR")})\n`;
+        });
+
+        return message.channel.send(texto);
+      }
+
+      return message.reply("⚠️ Use: `#dic fav add palavra` ou `#dic fav list`");
     }
 
     // ----------- HELP -----------
     return message.reply(
       "📖 **Comandos disponíveis:**\n" +
-      "`#dic add palavra | definição | sinônimos: opcional,opcional | exemplo: opcional`\n" +
-      "`#dic list`\n" +
-      "`#dic search palavra`\n" +
-      "`#dic remove palavra`\n" +
-      "`#dic random`\n" +
-      "`#dic history`"
+        "`#dic add palavra | definição | sinônimos: opcional | exemplo: opcional | categoria: opcional`\n" +
+        "`#dic list`\n" +
+        "`#dic search palavra`\n" +
+        "`#dic remove palavra`\n" +
+        "`#dic random [categoria]`\n" +
+        "`#dic history`\n" +
+        "`#dic top`\n" +
+        "`#dic fav add palavra`\n" +
+        "`#dic fav list`\n" +
+        "`#dic desafio`"
     );
-  }
+  },
 };
+
+// ---------------------------
+// Função de revisão programada
+// ---------------------------
+setInterval(() => {
+  let favs = JSON.parse(fs.readFileSync(favPath, "utf8"));
+  const agora = Date.now();
+
+  for (const userId in favs) {
+    favs[userId].forEach((fav) => {
+      const tempo = agora - fav.data;
+      // 1 hora, 1 dia, 1 semana
+      if (
+        Math.abs(tempo - 3600000) < 60000 || // 1h
+        Math.abs(tempo - 86400000) < 60000 || // 1d
+        Math.abs(tempo - 604800000) < 60000   // 7d
+      ) {
+        const user = global.client.users.cache.get(userId);
+        if (user) {
+          user.send(`📅 Revisão: lembre-se da palavra **${fav.palavra}**!`);
+        }
+      }
+    });
+  }
+}, 60000); // verifica a cada 1 minuto

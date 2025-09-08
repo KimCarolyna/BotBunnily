@@ -107,5 +107,27 @@
       "saída."
     ],
     "exemplo": "return \"Tudo certo!\";"
+  },
+  {
+    "palavra": "var",
+    "definicao": "Declara uma variável com escopo de função (mais antigo que let e const).",
+    "sinonimos": [
+      "variável",
+      "declaração",
+      "escopo funcional."
+    ],
+    "exemplo": "var nome = \"Carolina\";",
+    "categoria": "JS"
+  },
+  {
+    "palavra": "document",
+    "definicao": "Representa a página HTML atual.",
+    "sinonimos": [
+      "DOM",
+      "página",
+      "estrutura."
+    ],
+    "exemplo": "document.querySelector(\"h1\");",
+    "categoria": "JS"
   }
 ]
